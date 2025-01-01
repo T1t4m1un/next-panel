@@ -1,24 +1,4 @@
-import fpPromise from '@fingerprintjs/fingerprintjs';
-import { api } from './api';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var fp: string;
-}
-
-async function getFingerprint(): Promise<string> {
-  if (globalThis.fp) {
-    return globalThis.fp as string;
-  }
-
-  return await fpPromise.load()
-    .then(fp => fp.get())
-    .then(res => {
-      const fp = res.visitorId;
-      globalThis.fp = fp;
-      return fp;
-    });
-}
+import { getLocalFingerprint, getLocalPublicKey } from './local';
 
 function str2ab(str: string): ArrayBuffer {
   const binaryString = atob(str);
@@ -60,15 +40,7 @@ async function verifySignature(origin: string, signature: ArrayBuffer, public_ke
 }
 
 async function getPublicKey(): Promise<CryptoKey> {
-  let public_key = localStorage.getItem('public_key');
-  if (public_key === null) {
-    try {
-      public_key = await api.account.getPublicKey();
-      localStorage.setItem('public_key', public_key);
-    } catch {
-      throw Error('Cannot get public key to authenticate');
-    }
-  }
+  const public_key = await getLocalPublicKey();
   return await importPemPublicKey(public_key);
 }
 
@@ -82,7 +54,7 @@ export async function localVerify(): Promise<boolean> {
 
     const public_key = await getPublicKey();
 
-    const fp = await getFingerprint();
+    const fp = await getLocalFingerprint();
 
     try {
       return verifySignature(fp, token, public_key);

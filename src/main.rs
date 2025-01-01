@@ -77,7 +77,7 @@ mod tests {
     tracing_subscriber::fmt::init();
 
     let config = Config {
-      lan_ip: "127.0.0.1".to_string(),
+      lan_ip: "127.0.0.1:3000".to_string(),
       default_admin: "admin".to_string(),
       default_password: "114514".to_string(),
       db_path: "dev.sqlite".to_string(),

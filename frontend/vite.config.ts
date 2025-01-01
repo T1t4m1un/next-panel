@@ -51,7 +51,10 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'localhost:3333/api',
+      '/api': {
+        target: 'http://localhost:3000/',
+        rewrite: path => path.replace(/^\/__static/, ''),
+      },
     },
   },
 });

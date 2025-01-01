@@ -1,0 +1,48 @@
+.login-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.login-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 4rem;
+  box-shadow: 0 0 1rem #3c40431a;
+  border-radius: 0.5rem;
+  height: fit-content;
+}
+
+.login-header {
+  width: 5rem;
+}
+
+.login-panel h2 {
+  text-align: center;
+  padding-top: 0;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+.login-panel table {
+  width: 100%;
+  border-spacing: 0 1rem;
+}
+
+.login-panel tr td:first-child {
+  text-align: right;
+  padding-right: 1rem;
+  width: fit-content;
+}
+
+.login-panel input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-panel button {
+  margin-top: 1rem;
+  padding: 0.5rem 2.4rem;
+}
