@@ -2,3 +2,4 @@
 assets/*
 self_signed/*
 config/*
+*.sqlite

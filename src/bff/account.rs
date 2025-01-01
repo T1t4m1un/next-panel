@@ -15,20 +15,27 @@ struct LoginRequestSchema {
 }
 
 #[derive(serde::Serialize)]
+struct JwtPayload {
+  pub username: String,
+  pub role: String,
+  pub fp: String,
+}
+
+#[derive(serde::Serialize)]
 struct LoginResponseSchema {
   pub status: String,
-  pub username: Option<String>,
-  pub role: Option<String>,
-  pub token: Option<String>,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub info: Option<JwtPayload>,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub sign: Option<String>,
 }
 
 impl LoginResponseSchema {
   fn from_fail(status: &str) -> Self {
     LoginResponseSchema {
       status: status.to_string(),
-      username: None,
-      role: None,
-      token: None,
+      info: None,
+      sign: None,
     }
   }
 }
@@ -49,14 +56,19 @@ fn post_login() -> BffRouter {
       Ok(res) => match res {
         None => Json(LoginResponseSchema::from_fail("fail")),
         Some(user) => {
-          let token = data.encrypt.sign_with_private_key(&request.fp);
+          let payload = JwtPayload {
+            username: user.username,
+            role: user.role,
+            fp: request.fp,
+          };
+          let pl_json = serde_json::to_string(&payload).unwrap();
+          let token = data.encrypt.sign_with_private_key(&pl_json);
           match token {
             Err(_) => Json(LoginResponseSchema::from_fail("error")),
             Ok(token) => Json(LoginResponseSchema {
               status: "success".to_string(),
-              username: Some(user.username),
-              role: Some(user.role),
-              token: Some(token),
+              info: Some(payload),
+              sign: Some(token),
             }),
           }
         }
