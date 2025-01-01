@@ -46,7 +46,7 @@ impl Encrypt {
     let mut encrypted = vec![0; self.private.size() as usize];
     let _ = self
       .private
-      .private_encrypt(data.as_bytes(), &mut encrypted, Padding::PKCS1_PSS)?;
+      .private_encrypt(data.as_bytes(), &mut encrypted, Padding::PKCS1)?;
     Ok(base64::encode_block(&encrypted))
   }
 
@@ -81,7 +81,7 @@ mod tests {
     let public = Rsa::public_key_from_pem(public.as_bytes())?;
 
     let mut decrypted = vec![0; public.size() as usize];
-    let _ = public.public_decrypt(&cipher, &mut decrypted, Padding::PKCS1_PSS);
+    let _ = public.public_decrypt(&cipher, &mut decrypted, Padding::PKCS1);
 
     println!("{}", String::from_utf8(decrypted)?);
 

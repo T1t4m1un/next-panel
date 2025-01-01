@@ -37,7 +37,7 @@ async function importPemPublicKey(pemKey: string) {
     'spki', // 公钥格式
     binaryDer,
     {
-      name: 'RSA-PSS',  // 使用 PSS 填充模式
+      name: 'RSASSA-PKCS1-v1_5',  // 使用 PSS 填充模式
       hash: { name: 'SHA-256' },
     },
     true,
@@ -49,7 +49,7 @@ async function verifySignature(origin: string, signature: ArrayBuffer, public_ke
   const dataBuffer = (new TextEncoder).encode(origin);
   try {
     return crypto.subtle.verify(
-      { name: 'RSA-PSS' },
+      { name: 'RSASSA-PKCS1-v1_5' },
       public_key,
       signature,
       dataBuffer,
