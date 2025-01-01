@@ -1,2 +1,4 @@
 /target
-static/*
+assets/*
+self_signed/*
+config/*
