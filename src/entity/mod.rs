@@ -2,10 +2,14 @@ use openssl::{
   base64,
   hash::{Hasher, MessageDigest},
 };
-use sea_orm::{sqlx::types::chrono, ActiveModelTrait, ConnectionTrait, DatabaseConnection, Schema, Set};
+use sea_orm::{
+  sqlx::types::chrono, ActiveModelTrait, ConnectionTrait, DatabaseConnection, Schema, Set,
+};
 
 use crate::config::Config;
 
+pub mod publisher;
+pub mod subscription;
 pub mod user;
 
 pub async fn init_table(db: &DatabaseConnection, config: &Config) {
@@ -30,7 +34,6 @@ pub async fn init_table(db: &DatabaseConnection, config: &Config) {
       ..Default::default()
     };
 
-    let res = admin.insert(db).await;
-    log::info!("{:?}", res);
+    let _ = admin.insert(db).await;
   }
 }

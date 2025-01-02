@@ -11,7 +11,8 @@ mod entity;
 async fn db_init(db_path: &str, config: &Config) -> sea_orm::DatabaseConnection {
   let db_url = format!("sqlite://{}?mode=rwc", db_path);
   let mut option = sea_orm::ConnectOptions::new(db_url);
-  option.max_connections(64)
+  option
+    .max_connections(64)
     .min_connections(4)
     .min_connections(5)
     .connect_timeout(time::Duration::from_secs(8))
@@ -30,7 +31,10 @@ async fn db_init(db_path: &str, config: &Config) -> sea_orm::DatabaseConnection 
   db
 }
 
-fn bff_init(config: &Config, db: sea_orm::DatabaseConnection) -> JoinHandle<Result<(), std::io::Error>> {
+fn bff_init(
+  config: &Config,
+  db: sea_orm::DatabaseConnection,
+) -> JoinHandle<Result<(), std::io::Error>> {
   let Config {
     lan_ip,
     static_path,
@@ -50,9 +54,7 @@ fn bff_init(config: &Config, db: sea_orm::DatabaseConnection) -> JoinHandle<Resu
 
   let tcp_listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", port));
 
-  tokio::spawn(async {
-    axum::serve(tcp_listener.await.unwrap(), bff_service).await
-  })
+  tokio::spawn(async { axum::serve(tcp_listener.await.unwrap(), bff_service).await })
 }
 
 #[tokio::main]

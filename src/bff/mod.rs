@@ -1,6 +1,7 @@
 mod account;
 mod encrypt;
 mod local;
+mod next_push;
 
 use std::sync::Arc;
 
@@ -81,6 +82,7 @@ pub fn get_bff(params: BffParams) -> Result<Router> {
     .merge(post_ping())
     .merge(local::get_local_routers())
     .merge(account::get_account_routers())
+    .merge(next_push::get_next_push_routers())
     .with_state(bff_global_state);
 
   Ok(
@@ -88,6 +90,6 @@ pub fn get_bff(params: BffParams) -> Result<Router> {
       .nest("/api", ret)
       .route_service("/", serve_index)
       .nest_service(&static_prefix, serve_public)
-      .layer(middleware)
+      .layer(middleware),
   )
 }
